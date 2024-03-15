@@ -1,0 +1,10 @@
+micronaut:
+  server:
+    port: 8088
+
+datasources:
+  bankservice:
+    jdbc-url: jdbc:postgresql://localhost:5432/bankservice
+    username: bankservice
+    password: bankservice
+    driver-class-name: org.postgresql.Driver
