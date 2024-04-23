@@ -8,6 +8,7 @@ plugins {
     id("io.micronaut.aot") version "4.3.3"
     kotlin("plugin.lombok") version "1.9.23"
     id("io.freefair.lombok") version "8.1.0"
+    kotlin("kapt") version "1.7.10"
 }
 
 version = "0.1"
@@ -18,10 +19,11 @@ repositories {
     mavenCentral()
 }
 
-val fabrikt: Configuration by configurations.creating
 
 val generationDir = "${layout.projectDirectory}/generated"
 val apiFile = "${layout.projectDirectory}/openApi/MatcherAPI.yaml"
+
+val mapstructVersion = "1.5.5.Final"
 
 sourceSets {
     main { java.srcDirs("$generationDir/src/main/kotlin") }
@@ -32,10 +34,13 @@ sourceSets {
 
 
 dependencies {
-    implementation("org.mapstruct:mapstruct:1.4.2.Final")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
+    implementation ("org.mapstruct:mapstruct:$mapstructVersion")
+    kapt ("org.mapstruct:mapstruct-processor:$mapstructVersion")
+    kapt("io.micronaut.serde:micronaut-serde-processor")
     compileOnly("org.projectlombok:lombok:1.18.20")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
+    kapt("org.projectlombok:lombok:1.18.20")
+    implementation("io.micronaut.cache:micronaut-cache-caffeine")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
@@ -46,13 +51,11 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("jakarta.validation:jakarta.validation-api:3.1.0-M1")
-
-
-    compileOnly("io.micronaut:micronaut-http-client")
-    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
+    implementation("io.micronaut.openapi:micronaut-openapi")
+    implementation("io.micronaut.openapi:micronaut-openapi-annotations")
+    implementation("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("io.micronaut:micronaut-http-server-netty:4.3.8")
-
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.yaml:snakeyaml")
@@ -66,7 +69,6 @@ application {
 java {
     sourceCompatibility = JavaVersion.toVersion("21")
 }
-
 
 graalvmNative.toolchainDetection.set(false)
 micronaut {
@@ -90,6 +92,10 @@ micronaut {
     }
 }
 
+tasks.withType<Jar>() {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 tasks.named<io.micronaut.gradle.docker.MicronautDockerfile>("dockerfile") {
     baseImage("eclipse-temurin:21-jre-jammy")
 }
@@ -97,34 +103,3 @@ tasks.named<io.micronaut.gradle.docker.MicronautDockerfile>("dockerfile") {
 tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
     jdkVersion.set("21")
 }
-
-tasks {
-    val generateCode by creating(JavaExec::class) {
-        inputs.files(apiFile)
-        outputs.dir(generationDir)
-        outputs.cacheIf { true }
-        classpath(fabrikt)
-        mainClass.set("com.cjbooms.fabrikt.cli.CodeGen")
-        args = listOf(
-            "--output-directory", generationDir,
-            "--base-package", "cz.teddy.matcher.dto",
-            "--api-file", apiFile,
-            "--targets", "http_models",
-            "--targets", "controllers",
-            "--http-controller-target", "micronaut",
-            "--http-client-target", "OPEN_FEIGN",
-            "--validation-library", "JAKARTA_VALIDATION",
-
-        )
-    }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "21"
-        dependsOn(generateCode)
-    }
-    dependencies {
-        runtimeOnly("com.cjbooms:fabrikt:+")
-        fabrikt("com.cjbooms:fabrikt:+")
-    }
-}
-
-

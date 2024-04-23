@@ -1,10 +1,31 @@
 micronaut:
   server:
     port: 8088
+  application:
+    name: Matcher
+  http:
+    services:
+      bank-service:
+        url: http://localhost:8080
+  openapi:
+    views:
+      spec: 'swagger-ui.enabled=true'
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+  caches:
+    headlines:
+      charset: 'UTF-8'
+
 
 datasources:
-  bankservice:
-    jdbc-url: jdbc:postgresql://localhost:5432/bankservice
-    username: bankservice
-    password: bankservice
+  matcher:
+    jdbc-url: jdbc:postgresql://localhost:5433/matcher
+    username: matcher
+    password: matcher
     driver-class-name: org.postgresql.Driver

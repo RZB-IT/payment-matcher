@@ -1,29 +1,50 @@
 package cz.teddy.matcher.controller
 
-import com.example.controllers.MatchingTargetController
-import com.example.models.MatchingTarget
+import cz.teddy.matcher.controller.dto.MatchingTargetDTO
+import cz.teddy.matcher.service.domain.exception.NotFoundException
+import cz.teddy.matcher.mapper.MatchingTargetMapper
+import cz.teddy.matcher.service.MatchingTargetService
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
 
-@Controller
-class MatchingTargetController : MatchingTargetController {
-    override fun get(): HttpResponse<List<MatchingTarget>> {
-        TODO("Not yet implemented")
+@Controller("/targets")
+class MatchingTargetController(
+    val matchingTargetService: MatchingTargetService,
+    val mapper: MatchingTargetMapper
+)  {
+    @Get(produces = [MediaType.APPLICATION_JSON])
+     fun get(): HttpResponse<List<MatchingTargetDTO>> {
+        return HttpResponse.ok(matchingTargetService.getAll().map { mapper.mapServiceToDto(it) })
     }
 
-    override fun post(matchingTarget: MatchingTarget): HttpResponse<MatchingTarget> {
-        TODO("Not yet implemented")
+    @Post(produces = [MediaType.APPLICATION_JSON],
+        consumes = [MediaType.APPLICATION_JSON] )
+     fun post(@Body matchingTargetDTO: MatchingTargetDTO): HttpResponse<MatchingTargetDTO> {
+        val matchingTarget = matchingTargetService.create(mapper.mapDtoToService(matchingTargetDTO))
+        return HttpResponse.created(mapper.mapServiceToDto(matchingTarget))
     }
 
-    override fun getById(id: Int): HttpResponse<MatchingTarget> {
-        TODO("Not yet implemented")
+     fun getById(id: Int): HttpResponse<MatchingTargetDTO> {
+        return try {
+            HttpResponse.ok(mapper.mapServiceToDto(matchingTargetService.getById(id)))
+        } catch (e: NotFoundException) {
+            HttpResponse.notFound()
+        }
     }
 
-    override fun putById(matchingTarget: MatchingTarget, id: Int): HttpResponse<MatchingTarget> {
-        TODO("Not yet implemented")
+     fun putById(matchingTargetDTO: MatchingTargetDTO, id: Int): HttpResponse<MatchingTargetDTO> {
+        matchingTargetService.update(mapper.mapDtoToService(matchingTargetDTO), id)
+        return HttpResponse.ok()
     }
 
-    override fun deleteById(id: Int): HttpResponse<Unit> {
-        TODO("Not yet implemented")
+     fun deleteById(id: Int): HttpResponse<Unit> {
+        matchingTargetService.delete(id)
+        return HttpResponse.ok()
     }
+
+
 }

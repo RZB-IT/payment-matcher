@@ -5,5 +5,5 @@ import io.micronaut.data.annotation.Repository
 import io.micronaut.data.repository.CrudRepository
 
 @Repository
-interface MatchingEntityRepository : CrudRepository<MatchingTargetEntity,Int> {
+interface MatchingTargetRepository : CrudRepository<MatchingTargetEntity,Int> {
 }

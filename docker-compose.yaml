@@ -1,15 +1,13 @@
 services:
   db:
     image: postgres:16
-    container_name: matcher_bankservice_db
+    container_name: matcher_db
     env_file:
       - .base.env
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - 5432:5432
-    volumes:
-      - /Users/radekindra/PycharmProjects/rzb-bank-service/.data/db:/var/lib/postgresql/data
+      - 5433:5432
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready", "-d", "db_prod" ]
       interval: 30s
@@ -24,13 +22,13 @@ services:
       db:
         condition: service_healthy
     environment:
-#      INIT_COMMAND_URL: "jdbc:postgresql://localhost:5432/bankservice?autoReconnect=true&useSSL=false"
-#      INIT_COMMAND_CHANGELOG_FILE: "changelog-init.xml"
+      INIT_COMMAND_URL: "jdbc:postgresql://localhost:5433/matcher?autoReconnect=true&useSSL=false"
+      INIT_COMMAND_CHANGELOG_FILE: "changelog-init.xml"
       LIQUIBASE_LOG_LEVEL: "info"
       LIQUIBASE_CLASSPATH: "/liquibase/changelog"
-      LIQUIBASE_COMMAND_URL: "jdbc:postgresql://localhost:5432/bankservice?autoReconnect=true&useSSL=false"
-      LIQUIBASE_COMMAND_USERNAME: "bankservice"
-      LIQUIBASE_COMMAND_PASSWORD: "bankservice"
+      LIQUIBASE_COMMAND_URL: "jdbc:postgresql://localhost:5433/matcher?autoReconnect=true&useSSL=false"
+      LIQUIBASE_COMMAND_USERNAME: "matcher"
+      LIQUIBASE_COMMAND_PASSWORD: "matcher"
       LIQUIBASE_COMMAND_CHANGELOG_FILE: "changelog.xml"
     volumes:
       - ./liquibase:/liquibase/changelog

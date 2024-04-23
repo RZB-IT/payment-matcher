@@ -10,11 +10,11 @@ import jakarta.persistence.Table
 import java.util.Objects
 
 @Entity
-@Table(name = "matching_target", schema = "public", catalog = "bankservice")
+@Table(name = "matching_target", schema = "public")
 class MatchingTargetEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", unique = true, nullable = false)
     var id: Int = 0
 
     @Basic

@@ -1,44 +1,57 @@
 package cz.teddy.matcher.jpa.entity
 
-import io.micronaut.serde.annotation.Serdeable
 import jakarta.persistence.Basic
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import java.sql.Timestamp
 import java.util.Objects
 
 @Entity
-@Table(name = "matched_transaction", schema = "public", catalog = "bankservice")
+@Table(name = "matched_transaction", schema = "public")
 data class MatchedTransactionEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
     var id: Int = 0,
 
-    @Basic
-    @Column(name = "transcation_id")
-    var transcationId: String? = null,
+    @OneToOne(targetEntity = TransactionEntity::class)
+    @JoinColumn(name = "transaction_id")
+    var transaction: TransactionEntity? = null,
 
-    @Basic
-    @Column(name = "entity_id")
-    var entityId: Int? = null,
+    @OneToOne(targetEntity = MatchingTargetEntity::class)
+    @JoinColumn(name = "target_id")
+    var target: MatchingTargetEntity? = null,
 
     @Basic
     @Column(name = "created")
     var created: Timestamp? = null,
 ){
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as MatchedTransactionEntity
-        return id == that.id && transcationId == that.transcationId && entityId == that.entityId && created == that.created
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MatchedTransactionEntity
+
+        if (id != other.id) return false
+        if (transaction != other.transaction) return false
+        if (target != other.target) return false
+        if (created != other.created) return false
+
+        return true
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, transcationId, entityId, created)
+        var result = id
+        result = 31 * result + (transaction?.hashCode() ?: 0)
+        result = 31 * result + (target?.hashCode() ?: 0)
+        result = 31 * result + (created?.hashCode() ?: 0)
+        return result
     }
 }

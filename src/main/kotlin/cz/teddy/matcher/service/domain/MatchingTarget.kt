@@ -1,7 +1,7 @@
-package cz.teddy.matcher.domain
+package cz.teddy.matcher.service.domain
 
 data class MatchingTarget(
-    var id: Int = 0,
+    var id: Int? = null,
     var firstName: String? = null,
     var lastName: String? = null,
     var address: String? = null,

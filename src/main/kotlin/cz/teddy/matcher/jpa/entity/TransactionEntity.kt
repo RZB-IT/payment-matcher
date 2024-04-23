@@ -7,16 +7,20 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.Timestamp
 import java.util.Objects
 
 @Entity
-@Table(name = "transaction", schema = "public", catalog = "bankservice")
+@Table(name = "transaction", schema = "public")
 class TransactionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "transaction_id")
+    @Column(name ="id")
+    var id: Int = 0
+
+    @Column(name = "transaction_id", unique = true)
     var transactionId: String? = null
 
     @Basic
@@ -37,7 +41,7 @@ class TransactionEntity {
 
     @Basic
     @Column(name = "amount")
-    var amount: BigInteger? = null
+    var amount: BigDecimal? = null
 
     @Basic
     @Column(name = "comment")
