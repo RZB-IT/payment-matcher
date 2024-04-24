@@ -21,7 +21,7 @@ create table matched_transaction
         primary key,
     target_id      integer,
     created        timestamp(6),
-    transaction_id varchar(255)
+    transaction_id integer
 );
 
 create table transaction
