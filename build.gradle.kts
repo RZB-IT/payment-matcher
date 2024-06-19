@@ -2,7 +2,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.9.22"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.9.22"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.9.22"
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
+//    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.3.3"
     id("io.micronaut.aot") version "4.3.3"
@@ -40,7 +40,7 @@ dependencies {
     kapt("io.micronaut.serde:micronaut-serde-processor")
     compileOnly("org.projectlombok:lombok:1.18.20")
     kapt("org.projectlombok:lombok:1.18.20")
-    implementation("io.micronaut.cache:micronaut-cache-caffeine")
+    implementation("io.micronaut.cache:micronaut-cache-core")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
@@ -96,10 +96,3 @@ tasks.withType<Jar>() {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-tasks.named<io.micronaut.gradle.docker.MicronautDockerfile>("dockerfile") {
-    baseImage("eclipse-temurin:21-jre-jammy")
-}
-
-tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
-    jdkVersion.set("21")
-}

@@ -25,7 +25,8 @@ micronaut:
 
 datasources:
   matcher:
-    jdbc-url: jdbc:postgresql://localhost:5433/matcher
+#    jdbc-url: ${DB_URL:jdbc:postgresql://localhost:5433/matcher}
+    jdbc-url: jdbc:postgresql://host.docker.internal:5433/matcher
     username: matcher
     password: matcher
     driver-class-name: org.postgresql.Driver

@@ -1,5 +1,6 @@
 package cz.teddy.matcher
 
+import cz.teddy.matcher.service.MatchingService
 import io.micronaut.runtime.Micronaut
 import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.info.*

@@ -1,9 +1,12 @@
 package cz.teddy.matcher.service
 
+import cz.teddy.matcher.jpa.entity.MatchingTargetEntity
 import cz.teddy.matcher.service.domain.MatchingTarget
 import cz.teddy.matcher.service.domain.exception.NotFoundException
 import cz.teddy.matcher.jpa.repository.MatchingTargetRepository
 import cz.teddy.matcher.mapper.MatchingTargetMapper
+import io.micronaut.cache.annotation.CacheInvalidate
+import jakarta.annotation.PostConstruct
 import jakarta.inject.Singleton
 
 @Singleton
@@ -24,7 +27,6 @@ class MatchingTargetService(
         }
     }
 
-//    @CacheInvalidate("targets")
     fun create(matchingTarget: MatchingTarget): MatchingTarget {
         val entity = matchingTargetRepository.save(matchingTargetMapper.mapServiceToEntity(matchingTarget))
         return matchingTargetMapper.mapEntityToService(entity)

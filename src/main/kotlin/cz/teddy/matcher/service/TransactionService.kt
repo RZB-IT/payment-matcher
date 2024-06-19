@@ -20,7 +20,7 @@ class TransactionService(
     }
     fun load() = runBlocking{
        for (transactionDto in transactionClient.fetchTransactions(null,null ,null)){
-           if (transactionRepository.findByTransactionId(transactionDto.transactionId).isEmpty) {
+           if (transactionRepository.findByTransactionId(transactionDto.transactionId).isEmpty && !transactionDto.amount.contains("-")) {
                transactionRepository.save(transactionMapper.mapDtoToEntity(transactionDto))
            }
        }

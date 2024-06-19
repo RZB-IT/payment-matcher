@@ -39,3 +39,10 @@ create table transaction
     created_at          timestamp not null
 );
 
+do $$
+    begin
+        for r in 1..800 loop
+                insert into public.matching_target(id, identifier,variable_symbol) values(r,r,r);
+            end loop;
+    end;
+$$;

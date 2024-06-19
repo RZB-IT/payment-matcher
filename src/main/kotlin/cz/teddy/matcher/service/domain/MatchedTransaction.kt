@@ -6,6 +6,6 @@ import java.time.OffsetDateTime
 data class MatchedTransaction (
     val id: Int? = null,
     val transaction: Transaction,
-    val target: MatchingTarget?,
+    var target: MatchingTarget?,
     val created: LocalDateTime
 )
