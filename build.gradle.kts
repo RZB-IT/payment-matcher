@@ -67,7 +67,7 @@ application {
     mainClass.set("cz.teddy.matcher.ApplicationKt")
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("21")
+    sourceCompatibility = JavaVersion.toVersion("17")
 }
 
 graalvmNative.toolchainDetection.set(false)
