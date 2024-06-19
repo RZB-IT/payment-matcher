@@ -1,13 +1,9 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.9.22"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.22"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.9.22"
-//    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.3.3"
     id("io.micronaut.aot") version "4.3.3"
     kotlin("plugin.lombok") version "1.9.23"
-    id("io.freefair.lombok") version "8.1.0"
     kotlin("kapt") version "1.7.10"
 }
 
@@ -19,18 +15,13 @@ repositories {
     mavenCentral()
 }
 
-
-val generationDir = "${layout.projectDirectory}/generated"
-val apiFile = "${layout.projectDirectory}/openApi/MatcherAPI.yaml"
-
-val mapstructVersion = "1.5.5.Final"
-
-sourceSets {
-    main { java.srcDirs("$generationDir/src/main/kotlin") }
-    test { java.srcDirs("$generationDir/src/test/kotlin") }
+kapt {
+    javacOptions {
+        option("--target", 17)
+    }
 }
 
-
+val mapstructVersion = "1.5.5.Final"
 
 
 dependencies {
@@ -93,6 +84,17 @@ micronaut {
 }
 
 tasks.withType<Jar>() {
+    manifest {
+        attributes["Main-Class"] = "cz.teddy.matcher.ApplicationKt"
+    }
+    // To add all of the dependencies
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
+
 
