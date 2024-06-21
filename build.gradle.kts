@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.jpa") version "1.9.22"
     id("io.micronaut.application") version "4.3.3"
     id("io.micronaut.aot") version "4.3.3"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("plugin.lombok") version "1.9.23"
     kotlin("kapt") version "1.7.10"
 }
@@ -49,7 +50,7 @@ dependencies {
     runtimeOnly("io.micronaut:micronaut-http-server-netty:4.3.8")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("com.h2database:h2")
-    runtimeOnly("org.yaml:snakeyaml")
+    implementation("org.yaml:snakeyaml")
     testImplementation("io.micronaut:micronaut-http-client")
 }
 
@@ -87,13 +88,7 @@ tasks.withType<Jar>() {
     manifest {
         attributes["Main-Class"] = "cz.teddy.matcher.ApplicationKt"
     }
-    // To add all of the dependencies
-    from(sourceSets.main.get().output)
 
-    dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-    })
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 

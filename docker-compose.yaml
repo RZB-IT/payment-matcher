@@ -1,11 +1,11 @@
 services:
-#  app:
-#    build:
-#      dockerfile: Dockerfile
-#    ports:
-#      - 8088:8088
-##    environment:
-##      DB_URL: "jdbc:postgresql://host.docker.internal:5433/matcher"
+  app:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 8088:8088
+#    environment:
+#      DB_URL: "jdbc:postgresql://host.docker.internal:5433/matcher"
   db:
     image: postgres:16
     container_name: matcher_db

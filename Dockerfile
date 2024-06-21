@@ -17,10 +17,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the built application from the previous stage
-COPY --from=builder /app/build/libs/payment-matcher-0.1.jar .
+COPY --from=builder /app/build/libs/payment-matcher-0.1-all.jar .
 
 # Expose the port the application runs on
 EXPOSE 8088
 
 # Run the application
-CMD ["java", "-jar", "payment-matcher-0.1.jar"]
+CMD ["java", "-jar", "payment-matcher-0.1-all.jar"]
